@@ -8,12 +8,12 @@
 # description: Splunk indexer service
 #
 RETVAL=0
-
+DAEMON_USER="jboss"
 . /etc/init.d/functions
 JBOSS_HOME=/home/jboss/jboss-5.1.0.GA
 jboss_start() {
   echo Starting Jboss...
-  nohup "/home/jboss/jboss-5.1.0.GA/bin/run.sh" -b 0.0.0.0 -c default > /dev/null 2> /dev/null &
+  daemon --user $DAEMON_USER "nohup "/home/jboss/jboss-5.1.0.GA/bin/run.sh" -b 0.0.0.0 -c default > /dev/null 2> /dev/null &"
   RETVAL=$?
   [ $RETVAL -eq 0 ] && touch /var/lock/subsys/jboss
 }

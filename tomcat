@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# tomcat Auto startup Script
+
+#chkconfig 2345
+
+# Source Libraries for the entire script
+
+. /etc/rc.d/init.d/functions
+
+EXEC="/home/tomcat/$tomcat_version/bin/startup.sh"
+PROG="tomcat"
+LOCKFILE="/var/lock/subsys/tomcat"
+PIDFILE="/var/run/tomcat/running.pid"
+
+
+RUN_CMD="$EXEC > /home/tomcat/log/console.log 2>&1 & echo $! > $PIDFILE"
+DAEMON_USER="tomcat"
+
+start(){
+  [ -x $EXEC ] || exit 5
+  echo -n $"starting $PROG: "
+  daemon --check $PROG --user $DAEMON_USER --pidfile $PIDFILE "$RUN_CMD"
+  retval=$?
+  echo
+  [ retval -eq 0 ] && touch $LOCKFILE
+}
+
+case $1 in 
+   start)
+   start
+   ;;
+
+    *)
+   echo $"Usage: $0 {start|stop|status|restart}"
+   exit 2
+esac
+exit $?
